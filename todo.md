@@ -1,0 +1,5 @@
+- [x] Do raw balances for both bfr and esBFR
+- [ ] Add staking
+- [ ] Add BLP
+- [ ] Add Vestor
+- [ ] Decorate the Map

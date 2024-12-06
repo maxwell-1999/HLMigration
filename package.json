@@ -3,14 +3,22 @@
   "module": "index.ts",
   "type": "module",
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/json-bigint": "^1.0.4"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
+  "scripts": {
+    "dev": "bun run index.ts",
+    "tst": "bun run test.ts"
+  },
   "dependencies": {
+    "@types/pg": "^8.11.10",
     "axios": "^1.7.8",
     "axios-rate-limit": "^1.4.0",
+    "json-bigint": "^1.0.0",
+    "pg": "^8.13.1",
     "viem": "^2.21.53"
   }
 }
