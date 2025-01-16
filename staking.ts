@@ -1,11 +1,12 @@
 import type { ContractFunctionParameters } from "viem";
 import { sbfBFRAbi, sBFRAbi } from "./ABI";
 import { AccountList, addresses, ColIndex, defaultValue } from ".";
-import { chunkedMulticall } from "./utils";
+import { chunkedMulticall, relu } from "./utils";
 
 export async function fillStaking() {
   console.log("Staking");
   const currentHolderList = [...AccountList.keys()];
+  let total = 0n;
   // console.log(currentHolderList);
   const stakedBalanceCalls = currentHolderList.map((s) => {
     return {
@@ -34,10 +35,14 @@ export async function fillStaking() {
       typeof ele.result == "bigint" &&
       typeof claimableBalances[index].result == "bigint"
     ) {
-      oldValue[ColIndex.Staking] = ele.result + claimableBalances[index].result;
+      oldValue[ColIndex.Staking] = relu(
+        ele.result + claimableBalances[index].result
+      );
+      total += oldValue[ColIndex.Staking];
     } else {
       console.log("found wrong", ele, claimableBalances[index]);
     }
     AccountList.set(ele.args[0], oldValue);
   });
+  return total;
 }

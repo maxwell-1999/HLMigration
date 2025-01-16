@@ -13,7 +13,14 @@ import { fillRaw } from "./BFR";
 import { Client } from "pg";
 import { fillStaking } from "./staking";
 import { fillfsBLP } from "./fsBLP";
-import { convertMapToJson } from "./utils";
+import {
+  bigintToFloat,
+  calculateSum,
+  convertMapToJson,
+  dumpToJSON,
+  relu,
+} from "./utils";
+import { fillCamelot } from "./LP/Camelot";
 
 export const blockNumber = 280607605;
 export function blockLimit(notAnd?: boolean) {
@@ -41,6 +48,9 @@ export const addresses = {
   esBFR: "0x92914A456EbE5DB6A69905f029d6160CF51d3E6a",
   blp: "0x6Ec7B10bF7331794adAaf235cb47a2A292cD9c7e",
   bfr: "0x1a5b0aaf478bf1fda7b934c76e7692d722982a6d",
+  camelot: "0x47ECF602a62BaF7d4e6b30FE3E8dD45BB8cfFadc",
+  bfrWethGamma: "0x1E86A593E55215957C4755f1BE19a229AF3286f6",
+  bfrwethNFTPosManager: "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
   fsBLP: "0x7d1d610Fe82482412842e8110afF1cB72FA66bc8",
   sbBFR: "0x00B88B6254B51C7b238c4675E6b601a696CC1aC8",
 } as const;
@@ -133,22 +143,39 @@ async function fillHoldersAndVesters() {
   accounts.rows.map((r) => {
     AccountList.set(r.address, [...defaultValue]);
   });
+  let total = 0n;
   const vesterList = await destinationClient.query(`SELECT * FROM "vester"`);
   console.log(`${vesterList.rowCount} vesters fetched`);
   vesterList.rows.map((r) => {
     let oldValue = [...defaultValue];
-    oldValue[ColIndex.UnclaimedVester1] = r.v1balance;
-    oldValue[ColIndex.UnclaimedVester2] = r.v2balance;
-    AccountList.set(r.address, [...defaultValue]);
+    oldValue[ColIndex.UnclaimedVester1] = relu(r.v1balance);
+    oldValue[ColIndex.UnclaimedVester2] = relu(r.v2balance);
+    // console.log(typeof relu(r.v1balance), typeof relu(r.v2balance));
+    total +=
+      oldValue[ColIndex.UnclaimedVester1] + oldValue[ColIndex.UnclaimedVester2];
+    AccountList.set(r.address, [...oldValue]);
   });
+  return total;
 }
 
 async function main() {
-  await fillHoldersAndVesters();
-  await fillRaw();
-  await fillfsBLP();
-  await fillStaking();
+  const ves = await fillHoldersAndVesters();
+  console.log(`users for vesters have total ${ves} BFRs+esBFRs`);
+  const raw = await fillRaw();
+  const fs = await fillfsBLP();
+  const ss = await fillStaking();
+  let total = 0n;
   convertMapToJson(AccountList);
+  // for (let acc in AccountList) {
+  //   const tota = AccountList.get(acc as Address)!.reduce((prev, curr) => {
+  //     return relu(prev) + relu(curr);
+  //   }, 0n);
+  //   total += tota;
+  // }
+  console.log(`users have raw total ${bigintToFloat(raw)} BFRs+esBFRs`);
+  console.log(`users has total ${bigintToFloat(fs)} BFRs+esBFRs as BLP reward`);
+  console.log(`users has total ${bigintToFloat(ss)} BFRs+esBFRs as staked`);
+  console.log(`overall ${bigintToFloat(total)} BFRs+esBFRs are there`);
 }
 console.time("main");
 await main();

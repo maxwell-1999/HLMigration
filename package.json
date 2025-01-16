@@ -11,13 +11,15 @@
   },
   "scripts": {
     "dev": "bun run index.ts",
-    "tst": "bun run test.ts"
+    "tst": "bun run test.ts",
+    "prod": "bun run prod.ts"
   },
   "dependencies": {
     "@types/pg": "^8.11.10",
     "axios": "^1.7.8",
     "axios-rate-limit": "^1.4.0",
     "json-bigint": "^1.0.0",
+    "json2csv": "^6.0.0-alpha.2",
     "pg": "^8.13.1",
     "viem": "^2.21.53"
   }

@@ -1,31 +1,26 @@
 import { Client } from "pg";
 import { fsBLPAbi } from "./ABI";
-import { chunkedMulticall } from "./utils";
+import { chunkedMulticall, relu } from "./utils";
 import { AccountList, addresses, ColIndex, defaultValue } from ".";
 
 export async function fillfsBLP() {
   console.log("fillFSBLP");
-  const destinationConnectionString =
-    "postgresql://postgres:nwIqNaNUCZeBdUTGzIMSMNaHkZcOthcm@junction.proxy.rlwy.net:46679/railway";
-  // CSV File and Schema
-  const destinationClient = new Client({
-    connectionString: destinationConnectionString,
-  });
-  await destinationClient.connect();
-  const res = await destinationClient.query("SELECT * FROM account");
+  let total = 0n;
   const resp = await chunkedMulticall(
-    res.rows.map((r) => {
+    [...AccountList.keys()].map((r) => {
       return {
         address: addresses.fsBLP,
         abi: fsBLPAbi,
         functionName: "claimable",
-        args: [r.address],
+        args: [r],
       } as const;
     })
   );
   resp.map((s) => {
     let resp = AccountList.get(s.args[0]) || [...defaultValue];
-    resp[ColIndex.BLPRewardAsEsBfr] = s.result;
+    resp[ColIndex.BLPRewardAsEsBfr] = relu(s.result);
+    total += resp[ColIndex.BLPRewardAsEsBfr];
     AccountList.set(s.args[0], [...resp]);
   });
+  return total;
 }

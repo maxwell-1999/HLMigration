@@ -1,11 +1,13 @@
 import { sleep } from "bun";
 import { createPublicClient, http } from "viem";
 import { arbitrum } from "viem/chains";
-import JSONBig from "json-bigint";
 import type { AccountList } from ".";
-
+BigInt.prototype.toJSON = function () {
+  console.log("called");
+  return Number(this);
+};
 const MAX_BATCH_SIZE = 500;
-const client = createPublicClient({
+export const alchemyClient = createPublicClient({
   transport: http(
     "https://arb-mainnet.g.alchemy.com/v2/q8y6_aaOKZM4M30JUe0GYpWTVsOZ2au2"
   ),
@@ -25,12 +27,12 @@ export const chunkedMulticall = async (calls: any[]) => {
   let results: any[] = [];
   let callNumber = 1;
   // Sequentially execute multicalls using for await...of
-  console.log(
-    `fetching ${calls.length} calls in chunk of size ${MAX_BATCH_SIZE}`
-  );
+  // console.log(
+  //   `fetching ${calls.length} calls in chunk of size ${MAX_BATCH_SIZE}`
+  // );
   for await (const chunk of chunked) {
     try {
-      const res = await client.multicall({ contracts: chunk });
+      const res = await alchemyClient.multicall({ contracts: chunk });
       results = [
         ...results,
         ...res.map((r: any, i: any) => ({
@@ -38,9 +40,7 @@ export const chunkedMulticall = async (calls: any[]) => {
           ...{ ...chunk[i], abi: null },
         })),
       ];
-      console.log(
-        `${callNumber++ * MAX_BATCH_SIZE}/${sz} done : ${results.length}`
-      );
+      console.log(`-`);
       await sleep(1000); // Pause for 1 second between calls
     } catch (e) {
       console.log(e);
@@ -49,13 +49,49 @@ export const chunkedMulticall = async (calls: any[]) => {
   }
   return results;
 };
-
-export const convertMapToJson = (map: any) => {
-  console.log("converting to obj");
-  const mapObject = Object.fromEntries(map);
-  const jsonB = JSONBig.stringify(mapObject);
-
-  console.log("dumping to file");
-  Bun.write("data.json", jsonB);
+export function dumpToJSON(mapObject: any, fileName: string) {
+  const jsonB = JSON.stringify(mapObject);
+  Bun.write(`${fileName}.json`, jsonB);
   console.log("dumped to file");
+}
+export const convertMapToJson = (map: any, fileName: string = "data") => {
+  const valuesum = Object.fromEntries(map);
+  dumpToJSON(valuesum, fileName);
 };
+export const calculateSum = (map: any, fileName: string = "data") => {
+  let total = 0n;
+  [...map.keys()].forEach((ad) => {
+    total += map.get(ad).reduce((prev, curr) => prev + curr, 0n);
+  });
+  dumpToJSON(Object.fromEntries(map), fileName);
+};
+// for (let acc in AccountList) {
+//   const tota = AccountList.get(acc as Address)!.reduce((prev, curr) => {
+//     return relu(prev) + relu(curr);
+//   }, 0n);
+//   total += tota;
+// }
+
+export function relu(ip: number | bigint) {
+  // return ip;
+  if (typeof ip == "number") {
+    return BigInt(ip);
+  }
+
+  return BigInt(ip);
+}
+
+export function bigintToFloat(bigintValue: bigint, scale = 1e18) {
+  // Convert scale to BigInt for consistency
+  const scaleBigInt = BigInt(scale);
+
+  // Perform division to get the scaled value as a BigInt
+  const integerPart = bigintValue / scaleBigInt;
+
+  // Compute the fractional part as a float
+  const fractionalPart =
+    Number(bigintValue % scaleBigInt) / Number(scaleBigInt);
+
+  // Combine integer and fractional parts
+  return Number(integerPart) + fractionalPart;
+}
