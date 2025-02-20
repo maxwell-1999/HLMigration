@@ -1,7 +1,7 @@
 import { sleep } from "bun";
 import { createPublicClient, http } from "viem";
 import { arbitrum } from "viem/chains";
-import type { AccountList } from ".";
+import { blockNumber, type AccountList } from ".";
 BigInt.prototype.toJSON = function () {
   console.log("called");
   return Number(this);
@@ -32,7 +32,10 @@ export const chunkedMulticall = async (calls: any[]) => {
   // );
   for await (const chunk of chunked) {
     try {
-      const res = await alchemyClient.multicall({ contracts: chunk });
+      const res = await alchemyClient.multicall({
+        contracts: chunk,
+        blockNumber: BigInt(blockNumber),
+      });
       results = [
         ...results,
         ...res.map((r: any, i: any) => ({

@@ -1,8 +1,20 @@
-import { bigintToFloat } from "./utils";
-
 const fs = require("fs");
 // const { google } = require("googleapis");
 const { parse } = require("json2csv");
+function bigintToFloat(bigintValue: bigint, scale = 1e18) {
+  // Convert scale to BigInt for consistency
+  const scaleBigInt = BigInt(scale);
+
+  // Perform division to get the scaled value as a BigInt
+  const integerPart = bigintValue / scaleBigInt;
+
+  // Compute the fractional part as a float
+  const fractionalPart =
+    Number(bigintValue % scaleBigInt) / Number(scaleBigInt);
+
+  // Combine integer and fractional parts
+  return Number(integerPart) + fractionalPart;
+}
 
 // Your JSON data
 const jsonFilePath = "./data.json"; // Replace with your JSON file path
@@ -28,7 +40,7 @@ const csvData = parse([
 ]);
 
 // Save CSV to a file
-const csvFilePath = "./data1.csv";
+const csvFilePath = "./dataupdated.csv";
 fs.writeFileSync(csvFilePath, csvData, "utf-8");
 
 // Function to upload CSV to Google Drive
