@@ -1,6 +1,6 @@
-import { AccountList, addresses } from "..";
+import { AccountList, addresses, ColIndex, defaultValue } from "..";
 import { CamelotAbi } from "../ABI";
-import { alchemyClient, chunkedMulticall } from "../utils";
+import { alchemyClient, chunkedMulticall, relu } from "../utils";
 
 export async function fillCamelot() {
   const accountList = [...AccountList.keys()];
@@ -15,6 +15,12 @@ export async function fillCamelot() {
     abi: CamelotAbi,
     functionName: "getReserves",
   });
+  const camelotBFR = await alchemyClient.readContract({
+    address: addresses.bfr,
+    abi: CamelotAbi,
+    functionName: "balanceOf",
+    args: [addresses.camelot],
+  });
   const totalSupply = await alchemyClient.readContract({
     address: addresses.camelot,
     abi: CamelotAbi,
@@ -24,18 +30,13 @@ export async function fillCamelot() {
   const calls = await chunkedMulticall(readCalls);
   calls.forEach((c) => {
     const lpBalance = c.result;
-    if (lpBalance == 0n) return;
-    console.log(reserve0, lpBalance, totalSupply);
-    // Calculate your share of each token in the pool
-    const token0Amount = (reserve0 * lpBalance) / totalSupply;
-    total += token0Amount;
-    // const token1Amount = (reserve1 * lpBalance) / totalSupply;
+    // if (c.result > 0n) console.log(c.result);
+    const bfrAmount = (camelotBFR * lpBalance) / totalSupply;
+    let value = AccountList.get(c.args[0]) || [...defaultValue];
+    value[ColIndex.Camelot] = relu(bfrAmount) as bigint;
+    total += lpBalance;
+    AccountList.set(c.args[0], [...value]);
   });
   console.log(`User $combined have ${total} tokens`);
-  //   console.log(
-  //     calls.filter((c) => {
-  //       console.log(c.result);
-  //       return c.result > 0n;
-  //     })
-  //   );
+  return total;
 }

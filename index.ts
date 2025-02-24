@@ -35,8 +35,9 @@ export enum ColIndex {
   UnclaimedVester1,
   UnclaimedVester2,
   Staking,
+  Camelot,
 }
-export const defaultValue = new Array(6).fill(0);
+export const defaultValue = new Array(7).fill(0);
 
 export const AccountList = new Map<Address, Array<bigint>>();
 
@@ -54,6 +55,10 @@ export const addresses = {
   bfrwethPool: "0xB529f885260321729D9fF1C69804c5Bf9B3a95A5",
   fsBLP: "0x7d1d610Fe82482412842e8110afF1cB72FA66bc8",
   sbBFR: "0x00B88B6254B51C7b238c4675E6b601a696CC1aC8",
+  camelotAddresses:{
+    positionHelper:"0xe458018Ad4283C90fB7F5460e24C4016F81b8175",
+    router:"0xc873fEcbd354f5A56E00E710B90EF4201db2448d"
+  }
 } as const;
 
 // async function fillVester(vesterAddress: Address) {
@@ -162,6 +167,7 @@ async function fillHoldersAndVesters() {
 async function main() {
   const ves = await fillHoldersAndVesters();
   console.log(`users for vesters have total ${ves} BFRs+esBFRs`);
+  // const camelot = await fillCamelot();
   const raw = await fillRaw();
   const fs = await fillfsBLP();
   const ss = await fillStaking();

@@ -78,7 +78,11 @@ export const calculateSum = (map: any, fileName: string = "data") => {
 export function relu(ip: number | bigint) {
   // return ip;
   if (typeof ip == "number") {
+    if (ip < 0) ip = 0;
     return BigInt(ip);
+  }
+  if(ip < 0n){
+    ip = 0n
   }
 
   return BigInt(ip);
