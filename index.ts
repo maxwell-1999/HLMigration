@@ -28,7 +28,7 @@ import {
 import { fillCamelot } from "./LP/Camelot";
 import { sleep } from "bun";
 
-export const blockNumber = 280607605;
+export const blockNumber = 297628091;
 export function blockLimit(notAnd?: boolean) {
   return "";
 }
@@ -311,5 +311,9 @@ async function retryWithDelay<T>(
   }
 }
 
-await retryWithDelay(() => checkContract());
+// await retryWithDelay(() => checkContract());
+await main();
+// convert to csv
+// see changes
+// apply conditional formatting + add contracts (optional)
 console.timeEnd("main");
