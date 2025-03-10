@@ -1,10 +1,13 @@
 import {
   createPublicClient,
   decodeEventLog,
+  encodeFunctionData,
   erc20Abi,
   http,
   type ContractFunctionParameters,
 } from "viem";
+const fs = require("fs");
+
 import type { ApiResponse } from "./types";
 import { arbitrum } from "viem/chains";
 import { fsBLPAbi, vesterAbi } from "./ABI";
@@ -14,13 +17,16 @@ import { Client } from "pg";
 import { fillStaking } from "./staking";
 import { fillfsBLP } from "./fsBLP";
 import {
+  alchemyClient,
   bigintToFloat,
   calculateSum,
+  chunkedMulticall,
   convertMapToJson,
   dumpToJSON,
   relu,
 } from "./utils";
 import { fillCamelot } from "./LP/Camelot";
+import { sleep } from "bun";
 
 export const blockNumber = 280607605;
 export function blockLimit(notAnd?: boolean) {
@@ -55,10 +61,10 @@ export const addresses = {
   bfrwethPool: "0xB529f885260321729D9fF1C69804c5Bf9B3a95A5",
   fsBLP: "0x7d1d610Fe82482412842e8110afF1cB72FA66bc8",
   sbBFR: "0x00B88B6254B51C7b238c4675E6b601a696CC1aC8",
-  camelotAddresses:{
-    positionHelper:"0xe458018Ad4283C90fB7F5460e24C4016F81b8175",
-    router:"0xc873fEcbd354f5A56E00E710B90EF4201db2448d"
-  }
+  // camelotAddresses:{
+  //   positionHelper:"0xe458018Ad4283C90fB7F5460e24C4016F81b8175",
+  //   router:"0xc873fEcbd354f5A56E00E710B90EF4201db2448d"
+  // }
 } as const;
 
 // async function fillVester(vesterAddress: Address) {
@@ -185,5 +191,125 @@ async function main() {
   console.log(`overall ${bigintToFloat(total)} BFRs+esBFRs are there`);
 }
 console.time("main");
-await main();
+// await main();
+async function fillContracts() {
+  const jsonFilePath = "./data.json"; // Replace with your JSON file path
+  const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, "utf-8"));
+  Object.keys(jsonData).forEach(async (address) => {
+    const calls = Object.keys(jsonData)
+      .slice(0, 10)
+      .map((address) => ({
+        address: address as `0x${string}`,
+        abi: [
+          {
+            name: "getCode",
+            type: "function",
+            stateMutability: "view",
+            inputs: [{ name: "address", type: "address" }],
+            outputs: [{ name: "code", type: "bytes" }],
+          },
+        ],
+        functionName: "getCode",
+        args: [],
+      }));
+    const results = await chunkedMulticall([
+      {
+        address: "0x6Ec7B10bF7331794adAaf235cb47a2A292cD9c7e",
+        abi: [
+          {
+            name: "getCode",
+            type: "function",
+            stateMutability: "view",
+            inputs: [{ name: "address", type: "address" }],
+            outputs: [{ name: "code", type: "bytes" }],
+          },
+        ],
+        functionName: "getCode",
+        args: [],
+      },
+    ]);
+    results.forEach((result: { result: string }, index: number) => {
+      const address = calls[index].address;
+      console.log(result.result);
+      // If bytecode exists (not null and not '0x'), it's a contract
+      if (result.result && result.result !== "0x") {
+        console.log(`${address} is a contract`);
+      }
+    });
+  });
+}
+
+async function checkContract() {
+  const CHECKPOINT_FILE = "./contract_check_progressv2.json";
+  const addresses = JSON.parse(fs.readFileSync("./data.json", "utf-8"));
+  const addressList = Object.keys(addresses);
+  const batchSize = 1000;
+
+  // Load existing results if any
+
+  console.log("Need to process", addressList.length / batchSize, "batches");
+  let results: Record<number, any[]> = {};
+  for (let i = 0; i < addressList.length; i += batchSize) {
+    let completedBatches = JSON.parse(
+      fs.readFileSync(CHECKPOINT_FILE, "utf-8")
+    );
+    if (completedBatches[i]) {
+      results[i] = completedBatches[i];
+      console.log(`cached for ${i} to ${i + batchSize}`);
+      continue;
+    }
+
+    const batch = addressList.slice(i, i + batchSize);
+    console.log(`processing ${i} to ${i + batchSize}`);
+    const batchPromises = batch.map((address) => {
+      return alchemyClient.getCode({
+        address: address as `0x${string}`,
+      });
+    });
+    const batchResults = await Promise.all(batchPromises);
+
+    // Fix the reduce function with proper typing
+    results[i] = batchResults.reduce(
+      (acc: Record<string, string>, code: string, index: number) => {
+        acc[batch[index]] = code == null ? "eoa" : "contract";
+        return acc;
+      },
+      {}
+    );
+
+    await sleep(1000);
+    fs.writeFileSync(CHECKPOINT_FILE, JSON.stringify(results, null, 2));
+    console.log(`Completed batch ${Math.floor(i / batchSize) + 1}`);
+  }
+
+  return results;
+}
+// await fillContracts();
+
+async function retryWithDelay<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 300,
+  delayMs: number = 5000
+): Promise<T> {
+  let retryCount = 0;
+
+  while (true) {
+    try {
+      return await fn();
+    } catch (error) {
+      retryCount++;
+      console.error(`Error in attempt ${retryCount}/${maxRetries}:`, error);
+
+      if (retryCount >= maxRetries) {
+        console.error(`Failed after ${maxRetries} attempts. Giving up.`);
+        throw error;
+      }
+
+      console.log(`Retrying in ${delayMs / 1000} seconds...`);
+      await sleep(delayMs);
+    }
+  }
+}
+
+await retryWithDelay(() => checkContract());
 console.timeEnd("main");

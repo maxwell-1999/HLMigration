@@ -1,13 +1,23 @@
 const fs = require("fs");
 // const { google } = require("googleapis");
+const batch = JSON.parse(fs.readFileSync('./contract_check_progress.json', 'utf-8'));
+const isContract = {};
+// console.log(Object.keys(batch));
+for (const b in batch) {
+    // console.log(b);
+    for (const address in batch[b]) {
+        isContract[address] = batch[b][address] == "contract" ? true : false;
+
+    }
+}
 const { parse } = require("json2csv");
 function bigintToFloat(bigintValue: bigint, scale = 1e18) {
   // Convert scale to BigInt for consistency
   const scaleBigInt = BigInt(scale);
   // console.log(scaleBigInt)
-  if (bigintValue < 0n) {
-    return 0;
-  }
+  // if (bigintValue < 0n) {
+  //   return 0;
+  // }
   // Perform division to get the scaled value as a BigInt
   const integerPart = bigintValue / scaleBigInt;
 
@@ -24,9 +34,14 @@ const jsonFilePath = "./data.json"; // Replace with your JSON file path
 const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, "utf-8"));
 
 // Convert JSON data to CSV
-const rows = Object.entries(jsonData).map(([key, value]) => {
+const rows = Object.entries(jsonData).map(([address, value]) => {
   value = value.map((s) => bigintToFloat(BigInt(s)));
-  return [key, ...value]; // Flattening the JSON structure
+  if(isContract[address]){
+    value.push('contract');
+  }else{
+    value.push('eoa');
+  }
+  return [address, ...value]; // Flattening the JSON structure
 });
 
 const csvData = parse([
@@ -44,7 +59,7 @@ const csvData = parse([
 ]);
 
 // Save CSV to a file
-const csvFilePath = "./datacoallesced.csv";
+const csvFilePath = "./datav3.csv";
 fs.writeFileSync(csvFilePath, csvData, "utf-8");
 
 // Function to upload CSV to Google Drive

@@ -81,9 +81,9 @@ export function relu(ip: number | bigint) {
     if (ip < 0) ip = 0;
     return BigInt(ip);
   }
-  if(ip < 0n){
-    ip = 0n
-  }
+  // if(ip < 0n){
+  //   ip = 0n
+  // }
 
   return BigInt(ip);
 }
