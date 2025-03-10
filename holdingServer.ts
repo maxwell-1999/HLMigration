@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { cors } from '@elysiajs/cors';
 import { Pool } from "pg";
 
 // PostgreSQL connection configuration
@@ -36,6 +37,7 @@ interface RequestBody {
 
 // Create the server
 const app = new Elysia()
+  .use(cors())
   .get("/", () => "Holdings API Server")
   .post("/holdings", async ({ body }) => {
     const { address } = body as RequestBody;

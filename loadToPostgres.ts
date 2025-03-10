@@ -1,5 +1,6 @@
 import { Client } from 'pg';
 import * as fs from 'fs';
+import { getAddress } from 'viem';
 
 enum ColIndex {
     RawBFR,
@@ -125,13 +126,13 @@ async function loadData() {
 
         for (const [address, vals] of entries) {
             values.push([
-                address,
-                vals[ColIndex.RawBFR] || '0',
-                vals[ColIndex.RawEsBFR] || '0',
-                vals[ColIndex.BLPRewardAsEsBfr] || '0',
-                vals[ColIndex.UnclaimedVester1] || '0',
-                vals[ColIndex.UnclaimedVester2] || '0',
-                vals[ColIndex.Staking] || '0',
+                getAddress(address),
+                vals[ColIndex.RawBFR],
+                vals[ColIndex.RawEsBFR],
+                vals[ColIndex.BLPRewardAsEsBfr],
+                vals[ColIndex.UnclaimedVester1],
+                vals[ColIndex.UnclaimedVester2],
+                vals[ColIndex.Staking],
                 !isContract[address],
                 ''
             ]);
