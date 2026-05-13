@@ -2,10 +2,11 @@ import { sleep } from "bun";
 import { createPublicClient, http } from "viem";
 import { arbitrum } from "viem/chains";
 import { blockNumber, type AccountList } from ".";
-BigInt.prototype.toJSON = function () {
-  console.log("called");
-  return Number(this);
+
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
 };
+
 const MAX_BATCH_SIZE = 500;
 export const alchemyClient = createPublicClient({
   transport: http(
@@ -25,12 +26,11 @@ export const chunkedMulticall = async (calls: any[]) => {
     end += MAX_BATCH_SIZE;
   }
   let results: any[] = [];
-  let callNumber = 1;
   // Sequentially execute multicalls using for await...of
   // console.log(
   //   `fetching ${calls.length} calls in chunk of size ${MAX_BATCH_SIZE}`
   // );
-  for await (const chunk of chunked) {
+  for await (const [index, chunk] of chunked.entries()) {
     try {
       const res = await alchemyClient.multicall({
         contracts: chunk,
@@ -43,10 +43,11 @@ export const chunkedMulticall = async (calls: any[]) => {
           ...{ ...chunk[i], abi: null },
         })),
       ];
-      console.log(`-`);
+      console.log(`multicall chunk ${index + 1}/${chunked.length}`);
       await sleep(1000); // Pause for 1 second between calls
     } catch (e) {
-      console.log(e);
+      console.error(`multicall chunk ${index + 1}/${chunked.length} failed`);
+      throw e;
     }
     // break;
   }
@@ -75,22 +76,21 @@ export const calculateSum = (map: any, fileName: string = "data") => {
 //   total += tota;
 // }
 
-export function relu(ip: number | bigint) {
-  // return ip;
-  if (typeof ip == "number") {
-    if (ip < 0) ip = 0;
-    return BigInt(ip);
-  }
-  // if(ip < 0n){
-  //   ip = 0n
-  // }
+export function relu(ip: number | bigint | string | null | undefined) {
+  if (ip == null) return 0n;
 
-  return BigInt(ip);
+  let value: bigint;
+  if (typeof ip == "number") {
+    value = BigInt(ip);
+  } else {
+    value = BigInt(ip);
+  }
+
+  return value < 0n ? 0n : value;
 }
 
-export function bigintToFloat(bigintValue: bigint, scale = 1e18) {
-  // Convert scale to BigInt for consistency
-  const scaleBigInt = BigInt(scale);
+export function bigintToFloat(bigintValue: bigint, decimals = 18) {
+  const scaleBigInt = 10n ** BigInt(decimals);
 
   // Perform division to get the scaled value as a BigInt
   const integerPart = bigintValue / scaleBigInt;

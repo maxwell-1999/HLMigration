@@ -28,7 +28,7 @@ import {
 import { fillCamelot } from "./LP/Camelot";
 import { sleep } from "bun";
 
-export const blockNumber = 297628091;
+export const blockNumber = 297801672;
 export function blockLimit(notAnd?: boolean) {
   return "";
 }
@@ -43,7 +43,7 @@ export enum ColIndex {
   Staking,
   Camelot,
 }
-export const defaultValue = new Array(7).fill(0);
+export const defaultValue = new Array(7).fill(0n);
 
 export const AccountList = new Map<Address, Array<bigint>>();
 
@@ -147,8 +147,17 @@ const destinationConnectionString =
 const destinationClient = new Client({
   connectionString: destinationConnectionString,
 });
-await destinationClient.connect();
+let isDestinationClientConnected = false;
+
+async function connectDestinationClient() {
+  if (!isDestinationClientConnected) {
+    await destinationClient.connect();
+    isDestinationClientConnected = true;
+  }
+}
+
 async function fillHoldersAndVesters() {
+  await connectDestinationClient();
   console.log("Fetching users");
   const accounts = await destinationClient.query(`SELECT * FROM "account"`);
   console.log(`${accounts.rowCount} users fetched`);
@@ -177,21 +186,21 @@ async function main() {
   const raw = await fillRaw();
   const fs = await fillfsBLP();
   const ss = await fillStaking();
-  let total = 0n;
+  const total = [...AccountList.values()].reduce((accountTotal, row) => {
+    return (
+      accountTotal +
+      row.reduce((rowTotal, value) => rowTotal + relu(value), 0n)
+    );
+  }, 0n);
+
   convertMapToJson(AccountList);
-  // for (let acc in AccountList) {
-  //   const tota = AccountList.get(acc as Address)!.reduce((prev, curr) => {
-  //     return relu(prev) + relu(curr);
-  //   }, 0n);
-  //   total += tota;
-  // }
+
   console.log(`users have raw total ${bigintToFloat(raw)} BFRs+esBFRs`);
   console.log(`users has total ${bigintToFloat(fs)} BFRs+esBFRs as BLP reward`);
   console.log(`users has total ${bigintToFloat(ss)} BFRs+esBFRs as staked`);
   console.log(`overall ${bigintToFloat(total)} BFRs+esBFRs are there`);
 }
-console.time("main");
-// await main();
+
 async function fillContracts() {
   const jsonFilePath = "./data.json"; // Replace with your JSON file path
   const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, "utf-8"));
@@ -312,8 +321,14 @@ async function retryWithDelay<T>(
 }
 
 // await retryWithDelay(() => checkContract());
-await main();
-// convert to csv
-// see changes
-// apply conditional formatting + add contracts (optional)
-console.timeEnd("main");
+if (import.meta.main) {
+  console.time("main");
+  try {
+    await main();
+  } finally {
+    if (isDestinationClientConnected) {
+      await destinationClient.end();
+    }
+    console.timeEnd("main");
+  }
+}
