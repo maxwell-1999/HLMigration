@@ -8,6 +8,8 @@ import { blockNumber, type AccountList } from ".";
 };
 
 const MAX_BATCH_SIZE = 500;
+const MAX_MULTICALL_ATTEMPTS = 8;
+const RETRY_BASE_DELAY_MS = 10_000;
 export const alchemyClient = createPublicClient({
   transport: http(
     "https://arb-mainnet.g.alchemy.com/v2/q8y6_aaOKZM4M30JUe0GYpWTVsOZ2au2"
@@ -31,11 +33,24 @@ export const chunkedMulticall = async (calls: any[]) => {
   //   `fetching ${calls.length} calls in chunk of size ${MAX_BATCH_SIZE}`
   // );
   for await (const [index, chunk] of chunked.entries()) {
-    try {
+    for (let attempt = 1; attempt <= MAX_MULTICALL_ATTEMPTS; attempt++) {
+      try {
       const res = await alchemyClient.multicall({
         contracts: chunk,
         blockNumber: BigInt(blockNumber),
       });
+      const failed = res.filter((r: any) => r.status === "failure");
+
+      if (failed.length > 0) {
+        const sampleError = failed[0]?.error;
+        const message =
+          sampleError?.shortMessage ||
+          sampleError?.details ||
+          sampleError?.message ||
+          "multicall subcall failed";
+        throw new Error(`${failed.length}/${chunk.length} subcalls failed: ${message}`);
+      }
+
       results = [
         ...results,
         ...res.map((r: any, i: any) => ({
@@ -45,9 +60,19 @@ export const chunkedMulticall = async (calls: any[]) => {
       ];
       console.log(`multicall chunk ${index + 1}/${chunked.length}`);
       await sleep(1000); // Pause for 1 second between calls
-    } catch (e) {
-      console.error(`multicall chunk ${index + 1}/${chunked.length} failed`);
-      throw e;
+        break;
+      } catch (e) {
+        const isFinalAttempt = attempt === MAX_MULTICALL_ATTEMPTS;
+        console.error(
+          `multicall chunk ${index + 1}/${chunked.length} failed on attempt ${attempt}/${MAX_MULTICALL_ATTEMPTS}: ${
+            e instanceof Error ? e.message : String(e)
+          }`
+        );
+
+        if (isFinalAttempt) throw e;
+
+        await sleep(RETRY_BASE_DELAY_MS * attempt);
+      }
     }
     // break;
   }

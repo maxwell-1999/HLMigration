@@ -1,0 +1,381 @@
+{
+  "summary": {
+    "inputFile": "snapshot-297801672-v2.csv",
+    "outputFile": "snapshot-297801672-v2-resolved-types.csv",
+    "blockNumber": 297801672,
+    "unknownBefore": 73,
+    "resolvedEoa": 73,
+    "resolvedContract": 0,
+    "countsAfter": {
+      "eoa": 26087,
+      "contract": 758
+    }
+  },
+  "resolved": [
+    {
+      "address": "0x03F612C078Ef7d66620C89082Ec8972c5f65BA1B",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x06CB95c96d87DC61a04377f3ed519006BaA5ad8F",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x08e2919b494f8B6C6Ef170eBF7b902D4688aC1d6",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x0E4CAC3D5838496aF46710335b3E0012CFC976F3",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x0e77256a76Ff95eB7d7070219B55F2061E10C847",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x109CbDCf9e4F6Cb9EA56c810bc26F06f8b1F399F",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x1197050b03A2fb9254016Cb2362477592391E3e9",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x1cD4Afb9aF54325AB70A776741D6816FF0987a5C",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x1D76bae9Afebd67f2560eE9DD85A2022B2Bda914",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x1f4E4f07A0CF59b916CB2e338B92FE75B6Ed8338",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x1FCBa16771e138d4f330E13a09C8bCE42486b6b5",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x224B1F69f1dcF8B3671d3760F37BdD115e4696c4",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x236511E76f6D333486926A446A791C2326E628A7",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x23D391B83C595De42AEb6B33D2f2488d56321254",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x25Bf579A1797EA8B0c637Dc71a85a6aeADFdC2b9",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x2B6aC31995afeE028a0F2373A65CBAd5AC2Fe9aC",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x2b7DD66F1c31F7D3c785BD6414512b70bf923A73",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x30A422c8942301F2d60F5690C44DC39d2C272024",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x35546Eb5Ab0725939bF7754E3f1a481D10592dB8",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x3BdD6476fD2cCaf785f7baB49884080807Ed2dF5",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x3F66957bFdE4b840Cc51Aef0226d8d33a0b255D6",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x420b71b5767863F675B15722e37f9dc40BE5123B",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x4941903E504321615f51c77E5399cf23Db6A84D6",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x4b397F312fD629a44747f63099fe45ed29D35EfA",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x4DDb82a25164f22eBE556Ccd9c51Fd78fFAf4eb0",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x521448FD2b002c31a97D56f3a275238De0976cD0",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x589fF3a693aE8E5f6e822b38f8d8382622AF9dbb",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x5CE69D01eFe9778436070539bc6Ea9350b6d578f",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x5EEaf1AFE5E95013C785412Fe462000070B9cCCc",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x64306C70C1e5389B0b7C298319657f70AE17f1d6",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x647e04f1d1Cb2fF2BbCEEb85aB4d8AF5f6EeC135",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x6F413B49673d2f918cdE926256AB1b7191a87287",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x6F721D0A8aBDb5dBBdaB3c05eFA81371C0d21D68",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x72724e620586e440253cB8579A0B28ef9487b039",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x75640B1eB20E9473AD40Fcb600B016eefcAE2A7F",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x7669f59CCb76629aA13D611037D377aEbf165141",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x7765eBA9F7602dEEf006D1B1b1b73586b7c3Ac44",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x792EcD662AE84368BC7aEcB4d1fC77B1A02FBE8F",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x80b4b513C3B9e8a0f1F511b96005f84D813b456c",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x843535fd571F32AC8CAE13682aEB04CFec7D51cA",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x89c3556518511E3475D9691B286340f55C158548",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x91DDa995be3A56bBF2Ac6E5e14eb9213a336AAc6",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x91E23B702F5b816E81960443815F145Eee817353",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x9540C596007dEb55E2b0915a5A40462D959a5CB7",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x98BFB98044525ad696320015cFFB6EbeAcDD6fef",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x9a176b58964dFAa953b50f6Ef750d4eb41bC4E0a",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0x9c8578c487510C0315c75D295268123b70EB3718",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xa2Af7FDea63566E2661E52c0a867032e27fF146a",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xa9Cb8b0bC9C71565daECE74b574de54BA58473Ee",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xAA1435f09FD4211Dd84107bF4FDA9d37dc146006",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xaD24c421b03e08c63E22b4383A2812F8f6d39d39",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xaF6B011E71FA58e04fa0e5473aD8031F1ac2A43e",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xbB0681e131d704cb86bdA625A730c7866e262A3A",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xbbd7543Ab24453fd157B063e02A83FFd2f3dc834",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xbF4EDD7EBd30110e2C6243eA56eB6f304924000d",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xc43f5046C21914A03Ed60668996Fe6132AD6b8f2",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xC4b56e49996e6c41a45786D3DeeE110222e379bE",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xC794B210337339CE83f5be21F0f62802c029b332",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xcE7D7A8922Ff5558ae96ebB1733B0CeaaC579367",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xd19F546b4941936995937FEa56a8413f1397BD88",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xd665ac733fFc570e2f342Cd9bA6d7536A5920910",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xD8817EE08Ed20A55BE5Ea97E7F1CB969Cc3b2e88",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xdd08fB1b04Dd705B3f31834734D943C1E2629d03",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xE092e9E95CF5220b7ED4F996d89A7556291b74De",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xe637115620d7B3B464b20B8A8F6d9CfcBa486dcC",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xee14e10c2b227Ade050d4f9feA5A1cFb6fa96Cd9",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xeF814CD7B627AbFfcc1Ba7d53a2Be7c6dE79Cf1d",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xF169444cC46eA00484B0b76FB50a23363Ef865Cb",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xF2C5e08765b93A80F84Ad76F5dA3691Ea135215A",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xf7479ECfAD1Ec3CbabFefD55CC6e51A4aD37652d",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xfa70667fba693254d0F93242Ab51B4830F7125d6",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xFC8dCc8A2BFa16A4db8749Eef291FeA6fAd773f4",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    },
+    {
+      "address": "0xfDeF5231Add84Ba8926D3feaE8c24A2a7AC7f823",
+      "accountType": "eoa",
+      "bytecodeLength": 0
+    }
+  ]
+}

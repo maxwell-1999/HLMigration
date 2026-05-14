@@ -1,0 +1,244 @@
+{
+  "input": "snapshot-297801672-v2-resolved-types.csv",
+  "filter": "Account Type = eoa",
+  "eoaRows": 26087,
+  "columns": {
+    "Raw BFR": {
+      "total": "88309389.65449162",
+      "top5": [
+        {
+          "address": "0x000000000000000000000000000000000000dEaD",
+          "accountType": "eoa",
+          "value": "59659167.089019984254337963",
+          "total": "59659167.089019984254337963"
+        },
+        {
+          "address": "0x9Bb70bf2938A667cA6f039DB35B925e3d3Eb9885",
+          "accountType": "eoa",
+          "value": "4904339.73117753295504053",
+          "total": "4908009.86375130415244451"
+        },
+        {
+          "address": "0x565d37608E55cb0FAD8062C7e3aa5902869EC6e5",
+          "accountType": "eoa",
+          "value": "1450761.550242896789716595",
+          "total": "1450761.550244587221393845"
+        },
+        {
+          "address": "0xfa1e2DD94D6665bb964192Debac09c16242f8a48",
+          "accountType": "eoa",
+          "value": "621472.136399243169093504",
+          "total": "671218.967159404800754439"
+        },
+        {
+          "address": "0x0A75e0C413bc8dF71bDa8d583077367aA9570703",
+          "accountType": "eoa",
+          "value": "609481.076093740482594669",
+          "total": "609481.076095423286952632"
+        }
+      ]
+    },
+    "Raw esBFR": {
+      "total": "778855.9908475501",
+      "top5": [
+        {
+          "address": "0xF845d5442Ea015cC0290630B2b4CE2dF3662e58A",
+          "accountType": "eoa",
+          "value": "39273.084405336262918073",
+          "total": "39273.084405336262918073"
+        },
+        {
+          "address": "0x803c36A0f9AEAC4223933951Dcb4B62B2bf9Ad55",
+          "accountType": "eoa",
+          "value": "32674.170017021960872131",
+          "total": "32674.170017021960872131"
+        },
+        {
+          "address": "0x282d111B9410AbD409129BBDBE7DF1d3471cC362",
+          "accountType": "eoa",
+          "value": "30436.633306026759425862",
+          "total": "30436.633306026759425862"
+        },
+        {
+          "address": "0xC1666edcb9102E13Cb9Ab9Fd6b24AD95D634752B",
+          "accountType": "eoa",
+          "value": "27906.96",
+          "total": "27906.96"
+        },
+        {
+          "address": "0x89B3E00fb069A4DE1496c59FB6c6F1966AED0396",
+          "accountType": "eoa",
+          "value": "26649.835060683916793506",
+          "total": "26821.534253189015763598"
+        }
+      ]
+    },
+    "fsBLP Reward": {
+      "total": "179639.08992672068",
+      "top5": [
+        {
+          "address": "0x874Fe4B19027e693a7A12C8678d3ba6A0A7C0906",
+          "accountType": "eoa",
+          "value": "98402.822328759626176333",
+          "total": "101072.746138602768641351"
+        },
+        {
+          "address": "0xA1DA54688AF9ad8D905A415AcCCEcD2553E5233C",
+          "accountType": "eoa",
+          "value": "45809.422887713110853538",
+          "total": "53070.232826898005138345"
+        },
+        {
+          "address": "0x9F01898B30bd20BdC0A9A9FEE0eC3783917c4770",
+          "accountType": "eoa",
+          "value": "8958.587836752343636933",
+          "total": "231957.555277207106175494"
+        },
+        {
+          "address": "0x520e51e34d55d7bBa2076A5107DFc2535e6355b6",
+          "accountType": "eoa",
+          "value": "4885.477632976715458147",
+          "total": "7399.391138717264718309"
+        },
+        {
+          "address": "0xa1A8EBe743d14539fD7Bce676c4D179bD4E5B88C",
+          "accountType": "eoa",
+          "value": "3898.985702461236658128",
+          "total": "11238.115417056078719864"
+        }
+      ]
+    },
+    "Vester 1": {
+      "total": "151143.19013120924",
+      "top5": [
+        {
+          "address": "0x6025870447e54d0ebCf7948966eC3d8619DE22B1",
+          "accountType": "eoa",
+          "value": "36346.343036",
+          "total": "58141.014447726491119892"
+        },
+        {
+          "address": "0x5E521B60d714459981433cec94Df6E33e04189d1",
+          "accountType": "eoa",
+          "value": "12002.347368",
+          "total": "15032.088793078992262818"
+        },
+        {
+          "address": "0x5D4B67faB585eC9Ccd341eA9cE32C4A71840747D",
+          "accountType": "eoa",
+          "value": "11548",
+          "total": "11548"
+        },
+        {
+          "address": "0x08048f6D9db401d2716DCbb1979513231e5e3C81",
+          "accountType": "eoa",
+          "value": "11011.074961948249619484",
+          "total": "61458.530661499005846352"
+        },
+        {
+          "address": "0x186381052b9Badfe1A727BBB583f8beCF3582f57",
+          "accountType": "eoa",
+          "value": "10600",
+          "total": "36135.383905671195585716"
+        }
+      ]
+    },
+    "Vester 2": {
+      "total": "3485.9254520000004",
+      "top5": [
+        {
+          "address": "0xddF18E68c7f993800F612e1F4E633F44d866658B",
+          "accountType": "eoa",
+          "value": "2638.684083",
+          "total": "27027.920755751503710163"
+        },
+        {
+          "address": "0x67fa1CE1D4944cb3beab813B369966D34dA02e41",
+          "accountType": "eoa",
+          "value": "754.016068",
+          "total": "2008.748234243235245763"
+        },
+        {
+          "address": "0x715E48365Cc0A3f98738E5754d840eb030B60F16",
+          "accountType": "eoa",
+          "value": "93.225301",
+          "total": "93.225301305016795581"
+        }
+      ]
+    },
+    "Staking": {
+      "total": "6377775.872117954",
+      "top5": [
+        {
+          "address": "0x2151578e1fEc29361bB0481312Ea6b935014D636",
+          "accountType": "eoa",
+          "value": "787063.266675202018839372",
+          "total": "787063.266675733621768889"
+        },
+        {
+          "address": "0x4A537fe739fb652753459ac333337fc97Ef182c6",
+          "accountType": "eoa",
+          "value": "292101.875918520507705729",
+          "total": "295253.704794867116190857"
+        },
+        {
+          "address": "0x97C080C8543051B7F10D78Fba29C1D849d07DC45",
+          "accountType": "eoa",
+          "value": "286087.191175979320605678",
+          "total": "286087.19117656908840883"
+        },
+        {
+          "address": "0x04d7a435430EA8AceD8DFcAFc4f3Eb95a67a5CFf",
+          "accountType": "eoa",
+          "value": "237730.827284852969867792",
+          "total": "238104.657096401420628352"
+        },
+        {
+          "address": "0x9F01898B30bd20BdC0A9A9FEE0eC3783917c4770",
+          "accountType": "eoa",
+          "value": "222998.967440070328986424",
+          "total": "231957.555277207106175494"
+        }
+      ]
+    },
+    "Camelot": {
+      "total": "0",
+      "top5": []
+    },
+    "OTC": {
+      "total": "203979.52235336995",
+      "top5": [
+        {
+          "address": "0x5EEaf1AFE5E95013C785412Fe462000070B9cCCc",
+          "accountType": "eoa",
+          "value": "144999.99",
+          "total": "0"
+        },
+        {
+          "address": "0x89da619c7e13be65127401De8e62360F9DcaF82A",
+          "accountType": "eoa",
+          "value": "9540.99463618",
+          "total": "337692.415941481160138349"
+        },
+        {
+          "address": "0xD0e9e2A416C99E17b07D0438810FFf334f57b8Ad",
+          "accountType": "eoa",
+          "value": "5005.45598",
+          "total": "175.446174739323107386"
+        },
+        {
+          "address": "0xbbd7543Ab24453fd157B063e02A83FFd2f3dc834",
+          "accountType": "eoa",
+          "value": "5000",
+          "total": "0"
+        },
+        {
+          "address": "0x8d89C1E0b80885aF3394806bD714EF57Aac068c4",
+          "accountType": "eoa",
+          "value": "4100",
+          "total": "259567.549789976000397142"
+        }
+      ]
+    }
+  }
+}

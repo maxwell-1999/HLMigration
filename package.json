@@ -12,6 +12,10 @@
   "scripts": {
     "start": "bun run holdingServer.ts",
     "dev": "bun run index.ts",
+    "diff:data": "bun run diffData.ts",
+    "csv:snapshot": "bun run exportSnapshotCsv.ts",
+    "csv:snapshot:v2": "bun run exportSnapshotCsvV2.ts",
+    "db:load:resolved": "bun run loadResolvedSnapshotToPostgres.ts",
     "tst": "bun run test.ts",
     "prod": "bun run prod.ts"
   },
