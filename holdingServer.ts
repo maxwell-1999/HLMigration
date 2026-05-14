@@ -73,7 +73,7 @@ function wei(value: string | null | undefined) {
 function sumWei(values: string[]) {
   return values.reduce((sum, value) => sum + BigInt(value), 0n).toString();
 }
-
+// hello?
 function mapHolding(row: HoldingRow): HoldingData {
   const raw_bfr = wei(row.raw_bfr);
   const raw_esbfr = wei(row.raw_esbfr);
