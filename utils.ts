@@ -10,6 +10,16 @@ import { blockNumber, type AccountList } from ".";
 const MAX_BATCH_SIZE = 500;
 const MAX_MULTICALL_ATTEMPTS = 8;
 const RETRY_BASE_DELAY_MS = 10_000;
+const LOG_MULTICALL_PROGRESS = Bun.env.LOG_MULTICALL_PROGRESS === "true";
+
+function compactErrorMessage(error: unknown) {
+  const rawMessage = error instanceof Error ? error.message : String(error);
+  const [firstLine = "unknown error"] = rawMessage.split("\n");
+  const name = error instanceof Error ? error.name : "";
+
+  return `${name ? `${name}: ` : ""}${firstLine}`.slice(0, 500);
+}
+
 export const alchemyClient = createPublicClient({
   transport: http(
     "https://arb-mainnet.g.alchemy.com/v2/q8y6_aaOKZM4M30JUe0GYpWTVsOZ2au2"
@@ -58,16 +68,18 @@ export const chunkedMulticall = async (calls: any[]) => {
           ...{ ...chunk[i], abi: null },
         })),
       ];
-      console.log(`multicall chunk ${index + 1}/${chunked.length}`);
+      if (LOG_MULTICALL_PROGRESS) {
+        console.log(`multicall chunk ${index + 1}/${chunked.length}`);
+      }
       await sleep(1000); // Pause for 1 second between calls
         break;
       } catch (e) {
         const isFinalAttempt = attempt === MAX_MULTICALL_ATTEMPTS;
-        console.error(
-          `multicall chunk ${index + 1}/${chunked.length} failed on attempt ${attempt}/${MAX_MULTICALL_ATTEMPTS}: ${
-            e instanceof Error ? e.message : String(e)
-          }`
-        );
+        if (LOG_MULTICALL_PROGRESS || isFinalAttempt) {
+          console.error(
+            `multicall chunk ${index + 1}/${chunked.length} failed on attempt ${attempt}/${MAX_MULTICALL_ATTEMPTS}: ${compactErrorMessage(e)}`
+          );
+        }
 
         if (isFinalAttempt) throw e;
 

@@ -62,6 +62,9 @@ type HoldingRow = {
 
 const ZERO_WEI = "0";
 const OTC_SPR_MULTIPLIER = 10n;
+const PORT = Number(process.env.PORT ?? 3000);
+const HOSTNAME = "0.0.0.0";
+const LOG_REQUESTS = process.env.LOG_REQUESTS === "true";
 
 function wei(value: string | null | undefined) {
   return value ?? ZERO_WEI;
@@ -160,7 +163,9 @@ const app = new Elysia()
       `;
 
       const result = await client.query(query, [address]);
-      console.log("result", address, result.rows.length);
+      if (LOG_REQUESTS) {
+        console.log("result", address, result.rows.length);
+      }
       if (result.rows.length === 0) {
         return {
           status: 404,
@@ -190,7 +195,10 @@ const app = new Elysia()
       }
     }
   })
-  .listen(3000);
+  .listen({
+    port: PORT,
+    hostname: HOSTNAME,
+  });
 
 console.log(
   `🦊 Holdings server is running at http://${app.server?.hostname}:${app.server?.port}`

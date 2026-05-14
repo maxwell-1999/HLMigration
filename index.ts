@@ -307,7 +307,9 @@ async function retryWithDelay<T>(
       return await fn();
     } catch (error) {
       retryCount++;
-      console.error(`Error in attempt ${retryCount}/${maxRetries}:`, error);
+      console.error(
+        `Error in attempt ${retryCount}/${maxRetries}: ${compactErrorMessage(error)}`
+      );
 
       if (retryCount >= maxRetries) {
         console.error(`Failed after ${maxRetries} attempts. Giving up.`);
@@ -320,15 +322,31 @@ async function retryWithDelay<T>(
   }
 }
 
+function compactErrorMessage(error: unknown) {
+  const rawMessage = error instanceof Error ? error.message : String(error);
+  const [firstLine = "unknown error"] = rawMessage.split("\n");
+  const name = error instanceof Error ? error.name : "";
+
+  return `${name ? `${name}: ` : ""}${firstLine}`.slice(0, 500);
+}
+
+function shouldStartServerInsteadOfAccounting() {
+  return Boolean(process.env.PORT) && process.env.RUN_ACCOUNTING !== "true";
+}
+
 // await retryWithDelay(() => checkContract());
 if (import.meta.main) {
-  console.time("main");
-  try {
-    await main();
-  } finally {
-    if (isDestinationClientConnected) {
-      await destinationClient.end();
+  if (shouldStartServerInsteadOfAccounting()) {
+    await import("./holdingServer");
+  } else {
+    console.time("main");
+    try {
+      await main();
+    } finally {
+      if (isDestinationClientConnected) {
+        await destinationClient.end();
+      }
+      console.timeEnd("main");
     }
-    console.timeEnd("main");
   }
 }
