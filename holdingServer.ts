@@ -123,7 +123,6 @@ function mergeHoldings(primary: HoldingRow | null, secondary: HoldingRow | null)
   return {
     ...base,
     otc_payment: otcPayment,
-    remarks: joinText([primary?.remarks, secondary?.remarks]),
     source_file: joinText([primary?.source_file, secondary?.source_file]),
     snapshot_block: primary?.snapshot_block ?? secondary?.snapshot_block,
   } satisfies HoldingRow;
