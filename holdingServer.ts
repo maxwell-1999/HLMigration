@@ -1,24 +1,53 @@
 import { Elysia } from "elysia";
-import { cors } from '@elysiajs/cors';
+import { cors } from "@elysiajs/cors";
 import { Pool } from "pg";
 import { getAddress } from "viem";
 
-// PostgreSQL connection configuration
-const dbConfig = {
-  connectionString: process.env.DATABASE_URL,
-  max: 20, // Maximum number of clients in the pool
-  idleTimeoutMillis: 30000, // How long a client is allowed to remain idle before being closed
-  connectionTimeoutMillis: 2000, // How long to wait for a connection
-};
+function createPool(name: string, connectionString: string | undefined) {
+  if (!connectionString) {
+    throw new Error(`${name} is required`);
+  }
 
-// Create a connection pool
-const pool = new Pool(dbConfig);
+  const pool = new Pool({
+    connectionString,
+    max: 20,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
 
-// Handle pool errors
-pool.on("error", (err) => {
-  console.error("Unexpected error on idle client", err);
-  process.exit(-1);
-});
+  pool.on("error", (err) => {
+    console.error(`Unexpected error on idle ${name} client`, err);
+    process.exit(-1);
+  });
+
+  return pool;
+}
+
+const primaryPool = createPool("DATABASE_URL", process.env.DATABASE_URL);
+const secondaryPool = process.env.DATABASE2_URL
+  ? createPool("DATABASE2_URL", process.env.DATABASE2_URL)
+  : undefined;
+
+const holdingQuery = `
+  SELECT
+    address,
+    raw_bfr::text,
+    raw_esbfr::text,
+    fsblp::text,
+    vestor1::text,
+    vestor2::text,
+    staking::text,
+    COALESCE(camelot, 0)::text AS camelot,
+    COALESCE(otc, 0)::text AS otc_payment,
+    COALESCE(total, 0)::text AS total_without_otc,
+    is_eoa,
+    remarks,
+    source_file,
+    snapshot_block
+  FROM holdings
+  WHERE lower(address) = lower($1)
+  LIMIT 1;
+`;
 
 interface HoldingData {
   address: string;
@@ -73,7 +102,33 @@ function wei(value: string | null | undefined) {
 function sumWei(values: string[]) {
   return values.reduce((sum, value) => sum + BigInt(value), 0n).toString();
 }
-// hello?
+
+async function findHolding(pool: Pool, address: string) {
+  const result = await pool.query(holdingQuery, [address]);
+  return (result.rows[0] as HoldingRow | undefined) ?? null;
+}
+
+function joinText(values: Array<string | null | undefined>) {
+  return values.filter((value): value is string => Boolean(value)).join("; ");
+}
+
+function mergeHoldings(primary: HoldingRow | null, secondary: HoldingRow | null) {
+  const base = primary ?? secondary;
+  if (!base) return null;
+
+  const otcPayment = (
+    BigInt(wei(primary?.otc_payment)) + BigInt(wei(secondary?.otc_payment))
+  ).toString();
+
+  return {
+    ...base,
+    otc_payment: otcPayment,
+    remarks: joinText([primary?.remarks, secondary?.remarks]),
+    source_file: joinText([primary?.source_file, secondary?.source_file]),
+    snapshot_block: primary?.snapshot_block ?? secondary?.snapshot_block,
+  } satisfies HoldingRow;
+}
+
 function mapHolding(row: HoldingRow): HoldingData {
   const raw_bfr = wei(row.raw_bfr);
   const raw_esbfr = wei(row.raw_esbfr);
@@ -137,36 +192,21 @@ const app = new Elysia()
       };
     }
 
-    let client;
     try {
-      client = await pool.connect();
+      const [primaryHolding, secondaryHolding] = await Promise.all([
+        findHolding(primaryPool, address),
+        secondaryPool ? findHolding(secondaryPool, address) : Promise.resolve(null),
+      ]);
 
-      const query = `
-        SELECT
-          address,
-          raw_bfr::text,
-          raw_esbfr::text,
-          fsblp::text,
-          vestor1::text,
-          vestor2::text,
-          staking::text,
-          COALESCE(camelot, 0)::text AS camelot,
-          COALESCE(otc, 0)::text AS otc_payment,
-          COALESCE(total, 0)::text AS total_without_otc,
-          is_eoa,
-          remarks,
-          source_file,
-          snapshot_block
-        FROM holdings
-        WHERE lower(address) = lower($1)
-        LIMIT 1;
-      `;
-
-      const result = await client.query(query, [address]);
       if (LOG_REQUESTS) {
-        console.log("result", address, result.rows.length);
+        console.log("result", address, {
+          primary: primaryHolding ? 1 : 0,
+          secondary: secondaryHolding ? 1 : 0,
+        });
       }
-      if (result.rows.length === 0) {
+      const mergedHolding = mergeHoldings(primaryHolding, secondaryHolding);
+
+      if (!mergedHolding) {
         return {
           status: 404,
           body: {
@@ -175,7 +215,7 @@ const app = new Elysia()
         };
       }
 
-      const holding = mapHolding(result.rows[0] as HoldingRow);
+      const holding = mapHolding(mergedHolding);
 
       return {
         status: 200,
@@ -189,10 +229,6 @@ const app = new Elysia()
           error: "Internal server error",
         },
       };
-    } finally {
-      if (client) {
-        client.release();
-      }
     }
   })
   .listen({
